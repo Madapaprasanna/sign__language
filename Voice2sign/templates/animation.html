@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center;">
+
+  <!-- 🎙️ Input Panel -->
+  <div style="flex: 1 1 400px; position: relative; background: var(--glass); backdrop-filter: blur(var(--blur)); padding: 2rem; border-radius: 20px; box-shadow: 0 8px 24px rgba(0, 245, 212, 0.3);">
+    <h2 style="text-align: center; color: var(--primary); margin-bottom: 1rem;">🎤 Speak or Type Your Sentence</h2>
+
+    <form method="post" style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center;">
+      {% csrf_token %}
+      <input type="text" name="sen" id="speechToText" placeholder="Type here..." style="flex: 1 1 300px; padding: 0.75rem; border-radius: 12px; background-color: #2a2a2a; color: var(--primary); border: none; font-size: 1rem;">
+
+      <button type="button" onclick="record()" style="background-color: var(--primary); border: none; border-radius: 50%; padding: 0.6rem; cursor: pointer; box-shadow: 0 0 12px var(--primary); transition: transform 0.3s ease;">
+        <img src="{% static 'mic3.png' %}" alt="Mic" style="height: 32px; width: 38px;">
+      </button>
+
+      <input type="submit" value="Submit" style="background-color: var(--primary); color: var(--accent); font-weight: bold; padding: 0.75rem 1.5rem; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem;">
+    </form>
+
+    <div style="margin-top: 2rem;">
+      <p><strong style="color: var(--primary);">Entered Text:</strong> {{ text }}</p>
+      <p><strong style="color: var(--primary);">Key Words:</strong></p>
+      <ul id="list" style="list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 0.5rem;">
+        {% for word in words %}
+          <li style="background-color: #2a2a2a; padding: 0.5rem 1rem; border-radius: 12px; color: var(--primary); font-weight: bold; animation: pulse 2s infinite;">{{ word }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- 🎞️ Animation Panel -->
+  <div style="flex: 1 1 400px; background: var(--glass); backdrop-filter: blur(var(--blur)); padding: 2rem; border-radius: 20px; box-shadow: 0 8px 24px rgba(0, 245, 212, 0.3); text-align: center;">
+    <h2 style="color: var(--primary); margin-bottom: 1rem;">🧠 Sign Language Animation</h2>
+
+    <button onclick="playPause()" style="background-color: var(--primary); color: var(--accent); font-weight: bold; padding: 0.75rem 1.5rem; border: none; border-radius: 12px; cursor: pointer; font-size: 1rem; margin-bottom: 1rem; box-shadow: 0 0 12px var(--primary);">
+      ▶️ Play / Pause
+    </button>
+
+    <div style="overflow: hidden; border-radius: 16px; transition: transform 0.4s ease;">
+      <video id="videoPlayer" width="100%" height="auto" preload="auto" autoplay muted style="max-width: 600px; border-radius: 16px; box-shadow: 0 0 20px rgba(0, 245, 212, 0.3); transition: transform 0.3s ease;">
+        <source src="" type="video/mp4">
+        Your browser does not support HTML5 video.
+      </video>
+    </div>
+  </div>
+</div>
+
+<!-- 🔁 Animations -->
+<style>
+  @keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+    50% { transform: scale(1.05); box-shadow: 0 0 20px var(--primary); }
+    100% { transform: scale(1); box-shadow: 0 0 10px var(--primary); }
+  }
+
+  video:hover {
+    transform: scale(1.03);
+  }
+
+  button:hover {
+    transform: scale(1.05);
+  }
+</style>
+
+<!-- 🎙️ Speech + Video Script -->
+<script>
+  function record(){
+    var recognition = new webkitSpeechRecognition();
+    recognition.lang = 'en-IN';
+    recognition.onresult = function(event){
+      document.getElementById('speechToText').value = event.results[0][0].transcript;
+    }
+    recognition.start();
+  }
+
+  function play(){
+    var videoSource = [];
+    var videos = document.getElementById("list").getElementsByTagName("li");
+    for(let j = 0; j < videos.length; j++){
+      videoSource[j] = "/static/" + videos[j].innerHTML + ".mp4";
+    }
+
+    let i = 0;
+    const videoCount = videoSource.length;
+
+    function videoPlay(videoNum){
+      videos[videoNum].style.color = "#09edc7";
+      videos[videoNum].style.fontSize = "xx-large";
+      document.getElementById("videoPlayer").setAttribute("src", videoSource[videoNum]);
+      document.getElementById("videoPlayer").load();
+      document.getElementById("videoPlayer").play();
+    }
+
+    document.getElementById("videoPlayer").addEventListener('ended', myHandler, false);
+    videoPlay(0);
+
+    function myHandler(){
+      videos[i].style.color = "#00f5d4";
+      videos[i].style.fontSize = "20px";
+      i++;
+      if (i < videoCount){
+        videoPlay(i);
+      } else {
+        document.getElementById("videoPlayer").pause();
+      }
+    }
+  }
+
+  function playPause(){
+    const player = document.getElementById("videoPlayer");
+    if (player.paused){
+      play();
+    } else {
+      player.pause();
+    }
+  }
+</script>
+{% endblock %}

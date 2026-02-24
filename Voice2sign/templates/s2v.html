@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<link rel="stylesheet" href="{% static 'css/s2v.css' %}" />
+
+<div class="s2v-main-container">
+  <div class="language-toggle">
+    <button id="langRu" class="lang-btn active" onclick="changeLanguage('ru')">
+      RU
+    </button>
+    <button id="langEn" class="lang-btn" onclick="changeLanguage('en')">
+      EN
+    </button>
+  </div>
+
+  <div class="s2v-container">
+    <div class="video-section">
+      <div class="video-container">
+        <video id="webcam" autoplay playsinline style="display: none"></video>
+        <canvas id="feedbackCanvas"></canvas>
+        <div class="video-overlay" id="videoOverlay">
+          <div class="status-badge" id="streamStatus">Offline</div>
+        </div>
+      </div>
+
+      <div class="speech-output">
+        <i class="fas fa-comment-dots"></i>
+        <span id="detectedText">Waiting for sign...</span>
+      </div>
+    </div>
+
+    <div class="controls-section">
+      <div class="card">
+        <h3><i class="fas fa-camera"></i> Camera Controls</h3>
+        <div class="button-group">
+          <button id="startWebcamButton" class="btn primary">
+            <i class="fas fa-play"></i> Enable Camera
+          </button>
+          <button id="stopWebcamButton" class="btn danger hidden">
+            <i class="fas fa-stop"></i> Disable Camera
+          </button>
+        </div>
+      </div>
+
+      <div id="streamControls" class="card hidden">
+        <h3><i class="fas fa-broadcast-tower"></i> Stream Controls</h3>
+        <div class="button-group">
+          <button id="startStreamButton" class="btn success">
+            <i class="fas fa-rocket"></i> Start Stream
+          </button>
+          <button id="stopStreamButton" class="btn danger hidden">
+            <i class="fas fa-pause"></i> Stop Stream
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3><i class="fas fa-volume-up"></i> Voice Output</h3>
+        <button id="voiceBtn" class="btn primary btn-large">
+          <i class="fas fa-microphone-alt"></i> Voice
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="message-container" id="messageContainer"></div>
+
+<script src="{% static 'js/s2v.js' %}"></script>
+{% endblock %}

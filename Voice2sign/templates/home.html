@@ -1,0 +1,183 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="dashboard-wrapper">
+  <div class="welcome-section">
+    <h1 class="welcome-title">Welcome to AI Sign Assistant</h1>
+    <p class="welcome-subtitle">
+      Empowering communication through artificial intelligence
+    </p>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Feature 1: Text to Sign -->
+    <div class="dashboard-card" onclick="location.href='{% url 'animation' %}'">
+      <div class="card-glow"></div>
+      <div class="card-icon"><i class="fas fa-magic"></i></div>
+      <h2 class="card-title">Text/Voice to Sign</h2>
+      <p class="card-desc">
+        Type or speak to see sign language animations in real-time.
+      </p>
+      <div class="card-preview">
+        <video autoplay loop muted playsinline>
+          <source src="{% static 'Hello.mp4' %}" type="video/mp4" />
+        </video>
+      </div>
+      <button class="card-btn">Start Animation</button>
+    </div>
+
+    <!-- Feature 2: Sign to Voice -->
+    <div class="dashboard-card" onclick="location.href='{% url 's2v' %}'">
+      <div class="card-glow primary"></div>
+      <div class="card-icon"><i class="fas fa-hand-sparkles"></i></div>
+      <h2 class="card-title">Sign to Voice/Text</h2>
+      <p class="card-desc">
+        AI-powered recognition that translates your signs into speech.
+      </p>
+      <div class="card-preview placeholder">
+        <i class="fas fa-camera"></i>
+      </div>
+      <button class="card-btn">Open Recognition</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .dashboard-wrapper {
+    padding: 1rem;
+    animation: fadeIn 0.8s ease-out;
+  }
+
+  .welcome-section {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .welcome-title {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #00f5d4, #00d2ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+
+  .welcome-subtitle {
+    color: #888;
+    font-size: 1.1rem;
+  }
+
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .dashboard-card {
+    background: var(--glass);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 2rem;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .dashboard-card:hover {
+    transform: translateY(-10px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-glow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(
+      circle,
+      rgba(0, 245, 212, 0.15) 0%,
+      transparent 70%
+    );
+    top: -50px;
+    right: -50px;
+    z-index: 0;
+  }
+
+  .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    z-index: 1;
+  }
+
+  .card-desc {
+    color: #aaa;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    z-index: 1;
+  }
+
+  .card-preview {
+    width: 100%;
+    height: 160px;
+    background: #000;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-preview.placeholder {
+    background: linear-gradient(135deg, #1e1e2f, #0f0f1a);
+    font-size: 3rem;
+    color: rgba(0, 245, 212, 0.1);
+  }
+
+  .card-btn {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1;
+    width: 100%;
+  }
+
+  .dashboard-card:hover .card-btn {
+    background: var(--primary);
+    color: var(--bg);
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+{% endblock %}
