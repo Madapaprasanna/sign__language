@@ -3,6 +3,14 @@ import sys
 import time
 import os
 
+def check_module(python_path, module_name):
+    """Check if a module is available in the given python environment."""
+    try:
+        subprocess.check_call([python_path, "-c", f"import {module_name}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return True
+    except:
+        return False
+
 def kill_port(port):
     """Kill process on a specific port (Windows)."""
     try:
@@ -23,15 +31,21 @@ def kill_port(port):
     except:
         pass
 
-def find_python(directory, venv_name="venv"):
+def find_python(directory, venv_name="venv", required_module=None):
     """Locate the python executable in a virtual environment."""
     if os.name == 'nt': # Windows
         python_path = os.path.join(directory, venv_name, "Scripts", "python.exe")
     else: # Linux/Mac
         python_path = os.path.join(directory, venv_name, "bin", "python")
     
+    # Check if the venv python actually exists
     if os.path.exists(python_path):
+        if required_module and not check_module(python_path, required_module):
+             print(f"⚠️  Venv in {directory} is missing '{required_module}'. Falling back to system Python.")
+             return sys.executable
         return python_path
+    
+    # If no venv found, use the global python where the user ran pip install
     return sys.executable
 
 def run_servers():
@@ -47,8 +61,8 @@ def run_servers():
     fastapi_dir = os.path.join(root_dir, "Automated-Sign-Language-Tutor")
     
     # Use specific venvs for each part
-    django_python = find_python(django_dir)
-    fastapi_python = find_python(root_dir) # FastAPI uses root venv
+    django_python = find_python(root_dir, required_module="django") 
+    fastapi_python = find_python(root_dir, required_module="fastapi")
     
     print(f"🐍 Django Python: {django_python}")
     print(f"🐍 Signer Python: {fastapi_python}")
