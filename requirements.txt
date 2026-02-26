@@ -1,0 +1,20 @@
+# Common Dependencies
+numpy
+opencv-python-headless
+mediapipe
+
+# FastAPI Backend
+fastapi
+uvicorn
+websockets
+
+# Django Frontend
+django>=3.0.4
+nltk
+gunicorn
+whitenoise
+asgiref
+sqlparse
+joblib
+regex
+tqdm

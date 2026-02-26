@@ -119,7 +119,12 @@ function startStream() {
   document.getElementById("streamStatus").textContent = "Connecting...";
   document.getElementById("streamStatus").className = "status-badge connecting";
 
-  websocket = new WebSocket("ws://localhost:3005/");
+  const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+  const wsHost =
+    window.location.hostname === "localhost"
+      ? "localhost:3005"
+      : "your-backend-url.railway.app";
+  websocket = new WebSocket(`${protocol}//${wsHost}/`);
 
   websocket.onopen = () => {
     document.getElementById("streamStatus").textContent = "Live";

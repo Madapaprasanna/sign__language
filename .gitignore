@@ -1,22 +1,35 @@
 # Python Caches
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 *.pyd
 
 # Environments
 venv/
 env/
 .env
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+staticfiles/
+media/
+nltk_data/
 
 # IDEs
 .vscode/
 .idea/
+*.swp
+*.swo
 
 # OS files
 .DS_Store
 Thumbs.db
 
 # Large/Local files
-*.sqlite3
 *.log
+*.pot
+*.pyg

@@ -160,4 +160,7 @@ async def websocket_endpoint(websocket: WebSocket):
         print(f"Error: {e}")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=3005)
+    import os
+    port = int(os.environ.get("PORT", 3005))
+    host = os.environ.get("HOST", "0.0.0.0")
+    uvicorn.run(app, host=host, port=port)
