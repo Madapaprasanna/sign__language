@@ -72,6 +72,12 @@ app.add_middleware(
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
+print("🚀 FastAPI Sign Language Backend is initializing...")
+
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "Sign Language Backend is running"}
+
 @app.websocket("/")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()

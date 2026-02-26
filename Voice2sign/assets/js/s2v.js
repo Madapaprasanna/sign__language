@@ -120,10 +120,17 @@ function startStream() {
   document.getElementById("streamStatus").className = "status-badge connecting";
 
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-  const wsHost =
-    window.location.hostname === "localhost"
-      ? "localhost:3005"
-      : "your-backend-url.railway.app";
+
+  // Using dynamic URL from Django template to avoid hardcoding!
+  let wsHost = window.BACKEND_WS_URL;
+
+  if (!wsHost) {
+    wsHost =
+      window.location.hostname === "localhost"
+        ? "localhost:3005"
+        : "sign-language-backend.onrender.com"; // Default Render placeholder
+  }
+
   websocket = new WebSocket(`${protocol}//${wsHost}/`);
 
   websocket.onopen = () => {
