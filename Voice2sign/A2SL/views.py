@@ -22,7 +22,8 @@ def home_view(request):
 	return render(request,'home.html')
 
 def s2v_view(request):
-	return render(request,'s2v.html')
+	backend_url = os.environ.get('BACKEND_WS_URL', '')
+	return render(request,'s2v.html', {'BACKEND_WS_URL': backend_url})
 
 def animation_view(request):
 	if request.method == 'POST':
