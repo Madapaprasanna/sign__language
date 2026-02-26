@@ -7,14 +7,17 @@ from nltk.stem import WordNetLemmatizer
 import nltk
 import os
 
-# Add custom NLTK data path (if needed)
-nltk.data.path.append(os.path.join(os.getcwd(), "nltk_data"))
+# Add custom NLTK data path
+NLTK_DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "nltk_data")
+if NLTK_DATA_DIR not in nltk.data.path:
+    nltk.data.path.append(NLTK_DATA_DIR)
 
-# Safe-download punkt
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt', download_dir=os.path.join(os.getcwd(), "nltk_data"))
+# Ensure all required packages are downloaded
+for pkg in ['punkt', 'stopwords', 'wordnet', 'averaged_perceptron_tagger', 'omw-1.4']:
+    try:
+        nltk.download(pkg, download_dir=NLTK_DATA_DIR, quiet=True)
+    except Exception as e:
+        print(f"Error downloading NLTK package {pkg}: {e}")
 
 from django.contrib.staticfiles import finders
 
@@ -29,7 +32,7 @@ def animation_view(request):
 	if request.method == 'POST':
 		text = request.POST.get('sen')
 		#tokenizing the sentence
-		text.lower()
+		text = text.lower()
 	
 		#tokenizing the sentence
 		words = word_tokenize(text)
@@ -93,15 +96,18 @@ def animation_view(request):
 
 		filtered_text = []
 		for w in words:
-			path = w + ".mp4"
+			# Capitalize to match filenames like 'Hello.mp4' or 'A.mp4'
+			w_cap = w.capitalize() if len(w) > 1 else w.upper()
+			path = w_cap + ".mp4"
 			f = finders.find(path)
-			#splitting the word if its animation is not present in database
+			
 			if not f:
+				# If word not found, try as individual characters
 				for c in w:
-					filtered_text.append(c)
-			#otherwise animation of word
+					c_cap = c.upper()
+					filtered_text.append(c_cap)
 			else:
-				filtered_text.append(w)
+				filtered_text.append(w_cap)
 		words = filtered_text;
 
 
