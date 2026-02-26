@@ -10,7 +10,8 @@ if not os.path.exists(NLTK_DATA_DIR):
 
 print(f"📦 Downloading NLTK data to {NLTK_DATA_DIR}...")
 
-packages = ['punkt', 'stopwords', 'wordnet', 'averaged_perceptron_tagger', 'omw-1.4']
+# punkt_tab and averaged_perceptron_tagger_eng are newer versions needed by recent NLTK
+packages = ['punkt', 'punkt_tab', 'averaged_perceptron_tagger', 'averaged_perceptron_tagger_eng', 'wordnet', 'omw-1.4']
 
 for pkg in packages:
     print(f" - Downloading {pkg}...")
