@@ -17,6 +17,7 @@ const translations = {
     wsClosed: "Сервер отключен",
     wsError: "Ошибка подключения",
     correctGesture: "Detected: {text}",
+    waiting: "Ожидание знака...",
   },
   en: {
     startWebcam: "Enable Camera",
@@ -28,6 +29,7 @@ const translations = {
     wsClosed: "Server Closed",
     wsError: "Connection Error",
     correctGesture: "Detected: {text}",
+    waiting: "Waiting for sign...",
   },
 };
 
@@ -138,6 +140,7 @@ function startStream() {
     document.getElementById("streamStatus").className = "status-badge live";
     showMessage("wsConnected", "success");
     websocket.send(JSON.stringify({ type: "LANGUAGE", lang: currentLanguage }));
+    document.getElementById("detectedText").textContent = translations[currentLanguage].waiting;
     sendVideoStream();
   };
 
@@ -181,6 +184,7 @@ function stopStream() {
   document.getElementById("startStreamButton").classList.remove("hidden");
   if (frameInterval) clearInterval(frameInterval);
   if (websocket) websocket.close();
+  document.getElementById("detectedText").textContent = "";
 }
 
 function sendVideoStream() {
@@ -233,7 +237,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (voiceBtn) {
     voiceBtn.addEventListener("click", () => {
       const text = document.getElementById("detectedText").textContent;
-      if (text && text !== "Waiting for sign...") {
+      const waitingText = translations[currentLanguage].waiting;
+      if (text && text !== waitingText) {
         speak(text);
       }
     });
