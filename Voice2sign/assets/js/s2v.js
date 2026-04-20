@@ -133,7 +133,7 @@ function startStream() {
         : "sign-language-backend.onrender.com"; // Default Render placeholder
   }
 
-  websocket = new WebSocket(`${protocol}//${wsHost}/`);
+  websocket = new WebSocket(`${protocol}//${wsHost}/ws`);
 
   websocket.onopen = () => {
     document.getElementById("streamStatus").textContent = "Live";
