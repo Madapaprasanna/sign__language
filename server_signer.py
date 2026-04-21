@@ -1,4 +1,3 @@
-import os
 import base64
 import cv2
 import numpy as np
@@ -9,9 +8,6 @@ import json
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-
-# Optimization for Render: Suppress slow Matplotlib font cache building
-os.environ['MPLCONFIGDIR'] = '/tmp/matplotlib'
 
 # --- EXTRACTED LOGIC FROM SIGNER.PY ---
 
@@ -74,26 +70,17 @@ app.add_middleware(
 )
 
 mp_hands = mp.solutions.hands
-# model_complexity=0 uses the 'Lite' model which is faster and uses less memory on Render
-hands = mp_hands.Hands(
-    model_complexity=0, 
-    max_num_hands=2, 
-    min_detection_confidence=0.7, 
-    min_tracking_confidence=0.7
-)
+hands = mp_hands.Hands(max_num_hands=2, min_detection_confidence=0.7, min_tracking_confidence=0.7)
 
 print("🚀 FastAPI Sign Language Backend is initializing...")
 
-@app.api_route("/", methods=["GET", "HEAD"])
+@app.get("/")
 async def root():
     return {"status": "ok", "message": "Sign Language Backend is running"}
 
-@app.websocket("/ws")
 @app.websocket("/")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    path = websocket.url.path
-    print(f"✅ WebSocket connection opened on path: {path}")
     current_mode = "NORMAL"
     
     try:
@@ -174,9 +161,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     await websocket.send_json({"type": "FEEDBACK", "image": feedback_img})
                     
     except WebSocketDisconnect:
-        print("❌ WebSocket connection closed")
+        pass
     except Exception as e:
-        print(f"🔥 WebSocket Error: {e}")
+        print(f"Error: {e}")
 
 if __name__ == "__main__":
     import os

@@ -17,7 +17,6 @@ const translations = {
     wsClosed: "Сервер отключен",
     wsError: "Ошибка подключения",
     correctGesture: "Detected: {text}",
-    waiting: "Ожидание знака...",
   },
   en: {
     startWebcam: "Enable Camera",
@@ -29,7 +28,6 @@ const translations = {
     wsClosed: "Server Closed",
     wsError: "Connection Error",
     correctGesture: "Detected: {text}",
-    waiting: "Waiting for sign...",
   },
 };
 
@@ -127,19 +125,19 @@ function startStream() {
   let wsHost = window.BACKEND_WS_URL;
 
   if (!wsHost) {
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    wsHost = isLocal ? "localhost:3005" : window.location.host;
-    console.log(`📡 No BACKEND_WS_URL found, defaulting to ${wsHost}`);
+    wsHost =
+      window.location.hostname === "localhost"
+        ? "localhost:3005"
+        : "sign-language-backend.onrender.com"; // Default Render placeholder
   }
 
-  websocket = new WebSocket(`${protocol}//${wsHost}/ws`);
+  websocket = new WebSocket(`${protocol}//${wsHost}/`);
 
   websocket.onopen = () => {
     document.getElementById("streamStatus").textContent = "Live";
     document.getElementById("streamStatus").className = "status-badge live";
     showMessage("wsConnected", "success");
     websocket.send(JSON.stringify({ type: "LANGUAGE", lang: currentLanguage }));
-    document.getElementById("detectedText").textContent = translations[currentLanguage].waiting;
     sendVideoStream();
   };
 
@@ -183,7 +181,6 @@ function stopStream() {
   document.getElementById("startStreamButton").classList.remove("hidden");
   if (frameInterval) clearInterval(frameInterval);
   if (websocket) websocket.close();
-  document.getElementById("detectedText").textContent = "";
 }
 
 function sendVideoStream() {
@@ -236,8 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (voiceBtn) {
     voiceBtn.addEventListener("click", () => {
       const text = document.getElementById("detectedText").textContent;
-      const waitingText = translations[currentLanguage].waiting;
-      if (text && text !== waitingText) {
+      if (text && text !== "Waiting for sign...") {
         speak(text);
       }
     });
