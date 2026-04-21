@@ -127,10 +127,9 @@ function startStream() {
   let wsHost = window.BACKEND_WS_URL;
 
   if (!wsHost) {
-    wsHost =
-      window.location.hostname === "localhost"
-        ? "localhost:3005"
-        : "sign-language-backend.onrender.com"; // Default Render placeholder
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    wsHost = isLocal ? "localhost:3005" : window.location.host;
+    console.log(`📡 No BACKEND_WS_URL found, defaulting to ${wsHost}`);
   }
 
   websocket = new WebSocket(`${protocol}//${wsHost}/ws`);

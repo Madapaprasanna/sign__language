@@ -89,9 +89,11 @@ async def root():
     return {"status": "ok", "message": "Sign Language Backend is running"}
 
 @app.websocket("/ws")
+@app.websocket("/")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
-    print("✅ WebSocket connection opened")
+    path = websocket.url.path
+    print(f"✅ WebSocket connection opened on path: {path}")
     current_mode = "NORMAL"
     
     try:
