@@ -74,16 +74,6 @@ function applyTranslations() {
     `<i class="fas fa-pause"></i> ${t.stopStream}`;
 }
 
-function changeLanguage(lang) {
-  if (currentLanguage === lang) return;
-  currentLanguage = lang;
-  document.getElementById("langRu").classList.toggle("active", lang === "ru");
-  document.getElementById("langEn").classList.toggle("active", lang === "en");
-  applyTranslations();
-  if (websocket && websocket.readyState === WebSocket.OPEN) {
-    websocket.send(JSON.stringify({ type: "LANGUAGE", lang: lang }));
-  }
-}
 
 function startWebcam() {
   navigator.mediaDevices
@@ -129,9 +119,14 @@ function startStream() {
       window.location.hostname === "localhost"
         ? "localhost:3005"
         : "sign-language-backend.onrender.com"; // Default Render placeholder
+  } else {
+    // Basic fix: strip http/https if the user included it in the environment variable
+    wsHost = wsHost.replace(/^https?:\/\//, "").replace(/\/$/, "");
   }
 
-  websocket = new WebSocket(`${protocol}//${wsHost}/`);
+  const wsUrl = `${protocol}//${wsHost}/ws`;
+  console.log("📡 Attempting WebSocket connection to:", wsUrl);
+  websocket = new WebSocket(wsUrl);
 
   websocket.onopen = () => {
     document.getElementById("streamStatus").textContent = "Live";
@@ -233,7 +228,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (voiceBtn) {
     voiceBtn.addEventListener("click", () => {
       const text = document.getElementById("detectedText").textContent;
-      if (text && text !== "Waiting for sign...") {
+      if (text) {
         speak(text);
       }
     });
